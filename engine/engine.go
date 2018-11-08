@@ -151,6 +151,8 @@ func operate(b backend.Backend, img *image.ImageFile, operation Operation, optio
 		return b.Thumbnail(img, options)
 	case Fit:
 		return b.Fit(img, options)
+	case ThumbnailWithAnchor:
+		return b.ThumbnailWithAnchor(img, options)
 	default:
 		return nil, fmt.Errorf("Operation not found for %s", operation)
 	}

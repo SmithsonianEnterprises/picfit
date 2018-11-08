@@ -210,6 +210,53 @@ func (e *GoImage) Thumbnail(img *imagefile.ImageFile, options *Options) ([]byte,
 	return e.transform(image, options, imaging.Thumbnail)
 }
 
+func (e *GoImage) ThumbnailWithAnchor(img *imagefile.ImageFile, options *Options) ([]byte, error) {
+	if options.Format == imaging.GIF {
+		content, err := e.TransformGIF(img, options, imaging.Thumbnail)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return content, nil
+	}
+
+	srcImage, err := e.Source(img)
+
+	if err != nil {
+		return nil, err
+	}
+
+	srcBounds := srcImage.Bounds()
+	//x := srcBounds.Min.X + (srcBounds.Dx()-width)/2
+	//y := srcBounds.Min.Y + (srcBounds.Dy()-height)/2
+	//pt := srcImage.Pt(2000, 8000)
+	//r := srcImage.Rect(0, 0, srcBounds.Max.X, srcBounds.Max.Y).Add(pt)
+
+	sourceX, sourceY := float64(srcBounds.Max.X), float64(srcBounds.Max.Y)
+	targetX, targetY := float64(options.Width), float64(options.Height)
+	ratioX := targetX / sourceX
+	ratioY := targetY / sourceY
+	ratio := math.Max(ratioX, ratioY)
+	scaledTargetX := sourceX * ratioX / ratio
+	scaledTargetY := sourceY * ratioY / ratio
+
+	// Crop around the focal point
+	halfTargetX, halfTargetY := int(scaledTargetX/2), int(scaledTargetY/2)
+	focalPointX := options.FocalX
+	focalPointY := options.FocalY
+	cropBoundX := math.Max(0, math.Min(sourceX-scaledTargetX, float64(focalPointX-halfTargetX)))
+	cropBoundY := math.Max(0, math.Min(sourceY-scaledTargetY, float64(focalPointY-halfTargetY)))
+	box := image.Rect(
+		int(cropBoundX),
+		int(cropBoundY),
+		int(math.Min(sourceX, cropBoundX+scaledTargetX)),
+		int(math.Min(sourceY, cropBoundY+scaledTargetY)))
+	b := srcBounds.Intersect(box)
+	result := imaging.Crop(srcImage, b)
+	return e.transform(result, options, imaging.Thumbnail)
+}
+
 func (e *GoImage) Fit(img *imagefile.ImageFile, options *Options) ([]byte, error) {
 	if options.Format == imaging.GIF {
 		content, err := e.TransformGIF(img, options, imaging.Thumbnail)
