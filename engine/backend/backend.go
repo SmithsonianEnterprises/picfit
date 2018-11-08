@@ -18,6 +18,8 @@ type Options struct {
 	Height   int
 	Position string
 	Degree   int
+	FocalX   int
+	FocalY   int
 }
 
 // Engine is an interface to define an image engine

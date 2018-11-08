@@ -28,6 +28,7 @@ var formats = map[string]imaging.Format{
 	"bmp":  imaging.BMP,
 }
 
+// Engine hold the engine configuration
 type Engine struct {
 	DefaultFormat  string
 	Format         string
@@ -73,6 +74,7 @@ func (e Engine) String() string {
 	return strings.Join(backendNames, " ")
 }
 
+//Transform manipulate the image and produce a new one
 func (e Engine) Transform(img *image.ImageFile, operation Operation, qs map[string]string) (*image.ImageFile, error) {
 	err := mergo.Merge(&qs, defaultParams)
 
@@ -196,6 +198,28 @@ func newBackendOptions(e Engine, operation Operation, qs map[string]string) (*ba
 		return nil, err
 	}
 
+	var FocalX int
+	focalX, ok := qs["focal-x"]
+	if ok {
+		FocalX, err = strconv.Atoi(focalX)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		FocalX = -1
+	}
+
+	var FocalY int
+	focalY, ok := qs["focal-y"]
+	if ok {
+		FocalY, err = strconv.Atoi(focalY)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		FocalY = -1
+	}
+
 	return &backend.Options{
 		Width:    width,
 		Height:   height,
@@ -203,5 +227,7 @@ func newBackendOptions(e Engine, operation Operation, qs map[string]string) (*ba
 		Position: position,
 		Quality:  quality,
 		Degree:   degree,
+		FocalX:   FocalX,
+		FocalY:   FocalY,
 	}, nil
 }
