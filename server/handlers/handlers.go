@@ -46,7 +46,6 @@ func Display(c *gin.Context) {
 		c.Header(k, v)
 	}
 
-	c.Header("Cache-Control", "public, max-age=86400")
 	length := len(file.Content())
 	c.Header("Content-Length", fmt.Sprintf("%d", length))
 
