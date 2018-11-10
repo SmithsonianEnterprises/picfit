@@ -25,6 +25,7 @@ var HeaderKeys = []string{
 	"Age",
 	"Content-Type",
 	"Last-Modified",
+	"Cache-Control",
 	"Date",
 	"Etag",
 }

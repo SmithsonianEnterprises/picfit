@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -45,8 +46,9 @@ func Display(c *gin.Context) {
 		c.Header(k, v)
 	}
 
-	c.Header("Cache-Control", "public, max-age=86400,public")
-	c.Header("Content-Length", string(len(file.Content())))
+	c.Header("Cache-Control", "public, max-age=86400")
+	length := len(file.Content())
+	c.Header("Content-Length", fmt.Sprintf("%d", length))
 
 	c.Data(http.StatusOK, file.ContentType(), file.Content())
 }
