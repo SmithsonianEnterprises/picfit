@@ -121,6 +121,7 @@ func (s *HTTPServer) Init(opts Options) error {
 			middleware.URLParser(s.config.Options.MimetypeDetector),
 			middleware.OperationParser(),
 			middleware.RestrictSizes(s.config.Options.AllowedSizes),
+			middleware.AddHeader(s.config.Headers),
 			view,
 		}
 

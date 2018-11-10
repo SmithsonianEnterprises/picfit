@@ -43,6 +43,12 @@ type Sentry struct {
 	Tags map[string]string
 }
 
+//Header is a struct to store the header key val
+type Header struct {
+	Name  string `mapstructure:"name"`
+	Value string `mapstructure:"value"`
+}
+
 // Config is a struct to load configuration flags
 type Config struct {
 	Debug          bool
@@ -55,6 +61,7 @@ type Config struct {
 	AllowedOrigins []string `mapstructure:"allowed_origins"`
 	AllowedMethods []string `mapstructure:"allowed_methods"`
 	AllowedHeaders []string `mapstructure:"allowed_headers"`
+	Headers        []Header `mapstructure:"headers"`
 	Storage        *storage.Config
 	KVStore        *kvstore.Config
 	Logger         logger.Config
