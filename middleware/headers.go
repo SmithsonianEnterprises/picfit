@@ -8,7 +8,7 @@ import (
 func AddHeader(headers []config.Header) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		for _, headerPair := range headers {
-			c.Header(headerPair.Key, headerPair.Val)
+			c.Header(headerPair.Name, headerPair.Value)
 		}
 		c.Next()
 	}
